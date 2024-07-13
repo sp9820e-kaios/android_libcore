@@ -160,6 +160,7 @@ public final class Daemons {
             Reference<?> start = list;
             do {
                 // pendingNext is owned by the GC so no synchronization is required.
+                if (list == null) return;
                 Reference<?> next = list.pendingNext;
                 list.pendingNext = null;
                 list.enqueueInternal();

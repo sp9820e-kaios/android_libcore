@@ -36,34 +36,19 @@
 #include "toStringArray.h"
 
 static void CloseNonStandardFds(int status_pipe_fd) {
-  // On Cygwin, Linux, and Solaris, the best way to close iterates over "/proc/self/fd/".
-  const char* fd_path = "/proc/self/fd";
-#if defined(__APPLE__)
-  // On Mac OS, there's "/dev/fd/" which Linux seems to link to "/proc/self/fd/",
-  // but which on Solaris appears to be something quite different.
-  fd_path = "/dev/fd";
-#endif
-
-  // Keep track of the system properties fd so we don't close it.
+  struct rlimit rlimit;
+  getrlimit(RLIMIT_NOFILE, &rlimit);
+  int fd;
   int properties_fd = -1;
   char* properties_fd_string = getenv("ANDROID_PROPERTY_WORKSPACE");
   if (properties_fd_string != NULL) {
     properties_fd = atoi(properties_fd_string);
   }
-
-  DIR* d = opendir(fd_path);
-  int dir_fd = dirfd(d);
-  dirent* e;
-  while ((e = readdir(d)) != NULL) {
-    char* end;
-    int fd = strtol(e->d_name, &end, 10);
-    if (!*end) {
-      if (fd > STDERR_FILENO && fd != dir_fd && fd != status_pipe_fd && fd != properties_fd) {
-        close(fd);
-      }
+  for (fd = 3; fd < (int)rlimit.rlim_cur; fd++) {
+    if (fd != status_pipe_fd && fd != properties_fd) {
+      close(fd);
     }
   }
-  closedir(d);
 }
 
 #define PIPE_COUNT 4 // Number of pipes used to communicate with child.

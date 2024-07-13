@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+
  * Utilities for dealing with MIME types.
  * Used to implement java.net.URLConnection and android.webkit.MimeTypeMap.
  */
@@ -352,13 +353,16 @@ public final class MimeUtils {
         add("video/dv", "dif");
         add("video/dv", "dv");
         add("video/fli", "fli");
+        add("video/flv", "flv");
+        add("video/mp4", "f4v");
         add("video/m4v", "m4v");
         add("video/mp2ts", "ts");
         add("video/mpeg", "mpeg");
         add("video/mpeg", "mpg");
         add("video/mpeg", "mpe");
         add("video/mp4", "mp4");
-        add("video/mpeg", "VOB");
+        add("video/rmvb", "rmvb");
+        add("video/mpeg", "vob");
         add("video/quicktime", "qt");
         add("video/quicktime", "mov");
         add("video/vnd.mpegurl", "mxu");
